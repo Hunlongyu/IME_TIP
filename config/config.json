@@ -1,0 +1,32 @@
+{
+    "auto_start": true,
+    "update_interval": 100,
+    "type": "marker",
+    "position": {
+        "x": 4,
+        "y": 4
+    },
+    "marker": {
+        "en": {
+            "width": 10,
+            "color": "#FF0000",
+            "shape": "circle"
+        },
+        "zh": {
+            "width": 10,
+            "color": "#00FF00",
+            "shape": "circle"
+        }
+    },
+    "image": {
+        "en": {
+            "path": "image/en/marker.png",
+            "width": 4
+        },
+        "zh": {
+            "path": "image/zh/marker.png",
+            "width": 4
+        }
+    },
+    "exclude": []
+}
