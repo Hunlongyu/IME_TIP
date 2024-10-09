@@ -19,10 +19,14 @@ class WindowManager
     ~WindowManager();
 
     void initialize();
-    static void run();
+    static void run(const std::function<void()> &callback);
     void set_show_callback(const std::function<void()> &callback);
     void set_exit_callback(const std::function<void()> &callback);
     void set_icon(HICON hIcon);
+
+    HINSTANCE get_hinstance() const;
+
+    HWND get_hwnd() const;
 
   private:
     struct MenuItem

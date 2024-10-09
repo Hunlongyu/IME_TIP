@@ -1,1 +1,1 @@
-# IME_TIP
+# IME_Tips

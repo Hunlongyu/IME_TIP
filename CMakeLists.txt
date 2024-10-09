@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(webview-demo)
+project(IME_Tips)
 
 set(VERSION 0.0.1)
 
@@ -9,7 +9,6 @@ set(LANGUAGE CXX)
 set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 
 if(WIN32)
     set(RESOURCE_FILE "resource.rc")

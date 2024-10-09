@@ -1,4 +1,5 @@
 ﻿#include "window_manager.h"
+#include <iostream>
 
 WindowManager::WindowManager(HINSTANCE hInstance, const std::wstring &appName, const std::wstring &trayTooltip)
     : m_hInstance(hInstance), m_appName(appName), m_trayTooltip(trayTooltip), m_hwnd(nullptr), m_hPopMenu(nullptr)
@@ -41,7 +42,6 @@ void WindowManager::initialize_tray()
     wcsncpy_s(m_nid.szTip, L"IME_Tips\n输入法中英文状态提示", ARRAYSIZE(m_nid.szTip) - 1);
     m_nid.szTip[ARRAYSIZE(m_nid.szTip) - 1] = L'\0';
 
-
     Shell_NotifyIconW(NIM_ADD, &m_nid);
 
     m_hPopMenu = CreatePopupMenu();
@@ -65,13 +65,15 @@ void WindowManager::initialize_tray()
     }
 }
 
-void WindowManager::run()
+void WindowManager::run(const std::function<void()> &callback)
 {
     MSG msg;
     while (GetMessage(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
+
+        callback();
     }
 }
 
@@ -89,6 +91,16 @@ void WindowManager::set_icon(HICON hIcon)
 {
     m_nid.hIcon = hIcon;
     Shell_NotifyIconW(NIM_MODIFY, &m_nid);
+}
+
+HINSTANCE WindowManager::get_hinstance() const
+{
+    return m_hInstance;
+}
+
+HWND WindowManager::get_hwnd() const
+{
+    return m_hwnd;
 }
 
 LRESULT CALLBACK WindowManager::wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -117,7 +129,7 @@ LRESULT WindowManager::handle_message(const HWND hwnd, const UINT message, const
 {
     switch (message)
     {
-    case WM_TRAYICON:
+    case WM_TRAYICON: {
         if (l_param == WM_RBUTTONUP)
         {
             show_tray_menu();
@@ -130,6 +142,7 @@ LRESULT WindowManager::handle_message(const HWND hwnd, const UINT message, const
             }
         }
         break;
+    }
     case WM_COMMAND: {
         UINT id = LOWORD(w_param);
         for (const auto &item : m_menuItems)
@@ -140,11 +153,16 @@ LRESULT WindowManager::handle_message(const HWND hwnd, const UINT message, const
                 break;
             }
         }
+        break;
     }
-    break;
-    case WM_DESTROY:
+    case WM_DESTROY: {
         PostQuitMessage(0);
         break;
+    }
+    case WM_CLOSE: {
+        std::cout << "lala";
+        break;
+    }
     default:
         return DefWindowProc(hwnd, message, w_param, l_param);
     }
