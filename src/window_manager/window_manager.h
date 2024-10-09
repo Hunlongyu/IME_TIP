@@ -1,22 +1,51 @@
 ﻿#pragma once
 
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <windows.h>
 
-class WindowManager {
-public:
-	WindowManager(HINSTANCE hInstance);
-	~WindowManager();
+#include <shellapi.h>
 
-	bool Initialize();
-	void Run();
+#include <functional>
+#include <string>
+#include <vector>
 
-	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+class WindowManager
+{
+  public:
+    WindowManager(HINSTANCE hInstance, const std::wstring &appName, const std::wstring &trayTooltip);
+    ~WindowManager();
 
-private:
-	HINSTANCE m_hInstance;
-	HWND m_hwnd;
-	static WindowManager* s_pWindowManager;
+    void initialize();
+    static void run();
+    void set_show_callback(const std::function<void()> &callback);
+    void set_exit_callback(const std::function<void()> &callback);
+    void set_icon(HICON hIcon);
 
-	bool RegisterWindowClass();
-	bool CreateMainWindow();
+  private:
+    struct MenuItem
+    {
+        UINT id;
+        std::wstring text;
+        std::function<void()> callback;
+    };
+
+    static LRESULT CALLBACK wnd_proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+    LRESULT handle_message(HWND hwnd, UINT message, WPARAM w_param, LPARAM l_param) const;
+    void initialize_tray();
+    void show_tray_menu() const;
+
+    HINSTANCE m_hInstance;
+    HWND m_hwnd;
+    std::wstring m_appName;
+    std::wstring m_trayTooltip;
+    NOTIFYICONDATAW m_nid;
+    HMENU m_hPopMenu;
+    std::vector<MenuItem> m_menuItems;
+    std::function<void()> m_showCallback;
+    std::function<void()> m_exitCallback;
+
+    static const UINT WM_TRAYICON = WM_USER + 1;
 };
