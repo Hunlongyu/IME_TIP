@@ -1,2 +1,3 @@
 #include "resource.h"
-IDI_APP_ICON ICON "E:/Hunlongyu/IME_TIP/assets/image/logo.ico"
+IDI_APP_ICON ICON assets\image\logo.ico
+IDI_HTML_FILE HTML assets\html\index.html

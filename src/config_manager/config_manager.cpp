@@ -113,7 +113,8 @@ std::string ConfigManager::get_config_json_string() const
 void ConfigManager::set_config_from_json_string(std::string str)
 {
     json j = json::parse(str);
-    m_marker_properties_ = from_json(j);
+    json config = j[0].get<json>();
+    m_marker_properties_ = from_json(config);
     save_config();
 }
 

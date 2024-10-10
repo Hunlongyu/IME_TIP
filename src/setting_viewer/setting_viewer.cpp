@@ -1,5 +1,8 @@
 ﻿#include "setting_viewer.h"
+
+#include "../../resource.h"
 #include "../config_manager/config_manager.h"
+#include "../utils/utils.h"
 #include <iostream>
 
 SettingViewer::SettingViewer()
@@ -30,7 +33,14 @@ void SettingViewer::show()
     m_wv = new webview::webview(true, nullptr);
     m_wv->set_title("IME_Tips 设置");
     m_wv->set_size(1280, 720, WEBVIEW_HINT_NONE);
-    m_wv->navigate("https://baidu.com");
+
+    get_config();
+    save_config();
+
+    std::string html = load_html_resource(IDI_HTML_FILE);
+    m_wv->set_html(html);
+
+    // m_wv->navigate("https://baidu.com");
     m_wv->run();
     delete m_wv;
     m_wv = nullptr;
