@@ -42,7 +42,8 @@ FetchContent_Declare(
     GIT_TAG 0.12.0)
 FetchContent_MakeAvailable(webview)
 
-find_package(nlohmann_json CONFIG REQUIRED)
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
+FetchContent_MakeAvailable(json)
 
 target_link_libraries(
     ${PROJECT_NAME}
