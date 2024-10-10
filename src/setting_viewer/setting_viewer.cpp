@@ -30,8 +30,9 @@ void SettingViewer::show()
     {
         return;
     }
-    m_wv = new webview::webview(true, nullptr);
-    m_wv->set_title("IME_Tips 设置");
+
+    m_wv = new webview::webview(false, nullptr);
+    m_wv->set_title("IME_Tips settings");
     m_wv->set_size(1280, 720, WEBVIEW_HINT_NONE);
 
     get_config();
@@ -40,7 +41,6 @@ void SettingViewer::show()
     std::string html = load_html_resource(IDI_HTML_FILE);
     m_wv->set_html(html);
 
-    // m_wv->navigate("https://baidu.com");
     m_wv->run();
     delete m_wv;
     m_wv = nullptr;

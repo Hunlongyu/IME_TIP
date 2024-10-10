@@ -1,4 +1,5 @@
 ﻿#include "window_manager.h"
+#include "../../resource.h"
 #include <iostream>
 
 WindowManager::WindowManager(HINSTANCE hInstance, const std::wstring &appName, const std::wstring &trayTooltip)
@@ -26,7 +27,6 @@ void WindowManager::initialize()
 
     m_hwnd = CreateWindowExW(0, m_appName.c_str(), m_appName.c_str(), 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, m_hInstance,
                              this);
-
     initialize_tray();
 }
 
@@ -38,7 +38,7 @@ void WindowManager::initialize_tray()
     m_nid.uID = 1;
     m_nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
     m_nid.uCallbackMessage = WM_TRAYICON;
-    m_nid.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
+    m_nid.hIcon = LoadIcon(nullptr, MAKEINTRESOURCE(IDI_APP_ICON));
     wcsncpy_s(m_nid.szTip, L"IME_Tips\n输入法中英文状态提示", ARRAYSIZE(m_nid.szTip) - 1);
     m_nid.szTip[ARRAYSIZE(m_nid.szTip) - 1] = L'\0';
 
