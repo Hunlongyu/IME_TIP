@@ -53,4 +53,6 @@ target_link_libraries(
     nlohmann_json::nlohmann_json
 )
 
-install(FILES ${CMAKE_BINARY_DIR}/config/config.json DESTINATION bin)
+configure_file(${CMAKE_SOURCE_DIR}/config/config.json ${CMAKE_BINARY_DIR}/config.json COPYONLY)
+# install(FILES ${CMAKE_BINARY_DIR}/config/config.json DESTINATION bin)
+

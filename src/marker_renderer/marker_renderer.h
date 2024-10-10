@@ -52,11 +52,11 @@ class MarkerRenderer
     MarkerRenderer();
     ~MarkerRenderer();
 
-    void RenderMarker(HDC hdc, const POINT &position, bool isChineseInput);
-    void SetMarkerProperties(const MarkerProperties &properties);
+    void render_marker(HDC hdc, const POINT &position, bool is_chinese_input);
+    void set_marker_properties(const MarkerProperties &properties);
 
   private:
-    MarkerProperties m_properties;
+    MarkerProperties m_properties_;
 
-    COLORREF ParseColor(const std::string &colorStr);
+    COLORREF parse_color(const std::string &color_str);
 };

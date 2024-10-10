@@ -1,4 +1,5 @@
 ﻿#include "../resource.h"
+#include "config_manager/config_manager.h"
 #include "setting_viewer/setting_viewer.h"
 #include "window_manager/window_manager.h"
 
@@ -24,6 +25,8 @@ int main()
     {
         return 0;
     }
+
+    ConfigManager::get_instance().load_config();
 
     WindowManager windowManager(hInst, L"IME_Tips", L"输入法中英文状态提示");
 
