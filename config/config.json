@@ -1,6 +1,6 @@
 {
     "auto_start": true,
-    "update_interval": 100,
+    "update_interval": 2000,
     "type": "marker",
     "position": {
         "x": 4,
