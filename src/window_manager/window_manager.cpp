@@ -57,6 +57,7 @@ void WindowManager::initialize_tray()
                                    m_exitCallback();
                                }
                                PostQuitMessage(0);
+                               ExitProcess(0);
                            }});
 
     for (const auto &item : m_menuItems)

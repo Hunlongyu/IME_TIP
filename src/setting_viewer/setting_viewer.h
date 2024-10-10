@@ -12,6 +12,8 @@ class SettingViewer
 
     void show();
 
+    void close();
+
     void get_config() const;
 
     void save_config() const;

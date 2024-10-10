@@ -36,6 +36,17 @@ void SettingViewer::show()
     m_wv = nullptr;
 }
 
+void SettingViewer::close()
+{
+    if (!m_wv)
+    {
+        return;
+    }
+    m_wv->terminate();
+    delete m_wv;
+    m_wv = nullptr;
+}
+
 void SettingViewer::get_config() const
 {
     if (!m_wv)

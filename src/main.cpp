@@ -37,11 +37,14 @@ int main()
 
     windowManager.set_show_callback([] { SettingViewer::get_instance().show(); });
 
-    windowManager.set_exit_callback([]() {});
+    windowManager.set_exit_callback([] { SettingViewer::get_instance().close(); });
 
-    WindowManager::run([]() {
-
-    });
+    MSG msg;
+    while (GetMessage(&msg, nullptr, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
 
     if (hMutex)
     {
