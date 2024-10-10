@@ -12,6 +12,10 @@ class SettingViewer
 
     void show();
 
+    void get_config() const;
+
+    void save_config() const;
+
   private:
     webview::webview *m_wv{nullptr};
 
