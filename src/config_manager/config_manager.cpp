@@ -1,132 +1,170 @@
 ﻿#include "config_manager.h"
+#include "../utils/utils.h"
 #include <fstream>
 #include <iostream>
-#include <nlohmann/json.hpp>
-
-using json = nlohmann::json;
 
 ConfigManager::ConfigManager()
 {
-    // Set default properties
-    m_markerProperties.auto_start = false;
-    m_markerProperties.update_interval = 100;
-    m_markerProperties.type = "marker";
+    m_marker_properties_.auto_start = false;
+    m_marker_properties_.update_interval = 100;
+    m_marker_properties_.type = "marker";
 
-    m_markerProperties.position = {4, 4}; // Default position (x: 4, y: 4)
+    m_marker_properties_.position = {4, 4};
 
-    // Set default marker properties
-    m_markerProperties.marker.en = {10, "#FF0000", "circle"}; // English marker
-    m_markerProperties.marker.zh = {10, "#00FF00", "circle"}; // Chinese marker
+    m_marker_properties_.marker.en = {10, "#FF0000", "circle"};
+    m_marker_properties_.marker.zh = {10, "#00FF00", "circle"};
 
-    // Set default image properties
-    m_markerProperties.image.en = {"image/en/marker.png", 4};
-    m_markerProperties.image.zh = {"image/zh/marker.png", 4};
+    m_marker_properties_.image.en = {"image/en/marker.png", 4};
+    m_marker_properties_.image.zh = {"image/zh/marker.png", 4};
 
-    m_markerProperties.exclude = {};
+    m_marker_properties_.exclude = {};
+
+    auto dir = get_executable_path();
+    if (!dir.empty())
+    {
+        m_filename_ = dir + "/config.json";
+    }
 }
 
 ConfigManager::~ConfigManager()
 {
 }
 
-bool ConfigManager::LoadConfig(const std::string &filename)
+ConfigManager &ConfigManager::get_instance()
+{
+    static ConfigManager instance;
+    return instance;
+}
+
+MarkerProperties ConfigManager::from_json(json j)
+{
+    MarkerProperties maker;
+    maker.auto_start = j["auto_start"].get<bool>();
+    maker.update_interval = j["update_interval"].get<int>();
+    maker.type = j["type"].get<std::string>();
+
+    maker.position.x = j["position"]["x"].get<int>();
+    maker.position.y = j["position"]["y"].get<int>();
+
+    maker.marker.en.width = j["marker"]["en"]["width"].get<int>();
+    maker.marker.en.color = j["marker"]["en"]["color"].get<std::string>();
+    maker.marker.en.shape = j["marker"]["en"]["shape"].get<std::string>();
+
+    maker.marker.zh.width = j["marker"]["zh"]["width"].get<int>();
+    maker.marker.zh.color = j["marker"]["zh"]["color"].get<std::string>();
+    maker.marker.zh.shape = j["marker"]["zh"]["shape"].get<std::string>();
+
+    maker.image.en.path = j["image"]["en"]["path"].get<std::string>();
+    maker.image.en.width = j["image"]["en"]["width"].get<int>();
+
+    maker.image.zh.path = j["image"]["zh"]["path"].get<std::string>();
+    maker.image.zh.width = j["image"]["zh"]["width"].get<int>();
+
+    maker.exclude = j["exclude"].get<std::vector<std::string>>();
+    return maker;
+}
+
+json ConfigManager::to_json(MarkerProperties marker)
+{
+    json j;
+    j["auto_start"] = marker.auto_start;
+    j["update_interval"] = marker.update_interval;
+    j["type"] = marker.type;
+
+    j["position"]["x"] = marker.position.x;
+    j["position"]["y"] = marker.position.y;
+
+    j["marker"]["en"]["width"] = marker.marker.en.width;
+    j["marker"]["en"]["color"] = marker.marker.en.color;
+    j["marker"]["en"]["shape"] = marker.marker.en.shape;
+
+    j["marker"]["zh"]["width"] = marker.marker.zh.width;
+    j["marker"]["zh"]["color"] = marker.marker.zh.color;
+    j["marker"]["zh"]["shape"] = marker.marker.zh.shape;
+
+    j["image"]["en"]["path"] = marker.image.en.path;
+    j["image"]["en"]["width"] = marker.image.en.width;
+
+    j["image"]["zh"]["path"] = marker.image.zh.path;
+    j["image"]["zh"]["width"] = marker.image.zh.width;
+
+    j["exclude"] = marker.exclude;
+    return j;
+}
+
+std::string ConfigManager::json_to_string(json j)
+{
+    std::string json_string = j.dump();
+    return json_string;
+}
+
+std::string ConfigManager::struct_to_string(const MarkerProperties &marker)
+{
+    json j = to_json(marker);
+    std::string json_string = j.dump();
+    return json_string;
+}
+
+std::string ConfigManager::get_config_json_string() const
+{
+    return struct_to_string(m_marker_properties_);
+}
+
+void ConfigManager::set_config_from_json_string(std::string str)
+{
+    json j = json::parse(str);
+    m_marker_properties_ = from_json(j);
+    save_config();
+}
+
+void ConfigManager::load_config()
 {
     try
     {
-        std::ifstream file(filename);
+        std::ifstream file(m_filename_);
         if (!file.is_open())
         {
-            std::cerr << "Unable to open config file: " << filename << std::endl;
-            return false;
+            save_config();
+            return;
         }
 
         json j;
         file >> j;
 
-        m_markerProperties.auto_start = j["auto_start"].get<bool>();
-        m_markerProperties.update_interval = j["update_interval"].get<int>();
-        m_markerProperties.type = j["type"].get<std::string>();
-
-        m_markerProperties.position.x = j["position"]["x"].get<int>();
-        m_markerProperties.position.y = j["position"]["y"].get<int>();
-
-        m_markerProperties.marker.en.width = j["marker"]["en"]["width"].get<int>();
-        m_markerProperties.marker.en.color = j["marker"]["en"]["color"].get<std::string>();
-        m_markerProperties.marker.en.shape = j["marker"]["en"]["shape"].get<std::string>();
-
-        m_markerProperties.marker.zh.width = j["marker"]["zh"]["width"].get<int>();
-        m_markerProperties.marker.zh.color = j["marker"]["zh"]["color"].get<std::string>();
-        m_markerProperties.marker.zh.shape = j["marker"]["zh"]["shape"].get<std::string>();
-
-        m_markerProperties.image.en.path = j["image"]["en"]["path"].get<std::string>();
-        m_markerProperties.image.en.width = j["image"]["en"]["width"].get<int>();
-
-        m_markerProperties.image.zh.path = j["image"]["zh"]["path"].get<std::string>();
-        m_markerProperties.image.zh.width = j["image"]["zh"]["width"].get<int>();
-
-        // 如果 exclude 是一个空数组，直接解析为空的 vector
-        m_markerProperties.exclude = j["exclude"].get<std::vector<std::string>>();
-
-        return true;
+        m_marker_properties_ = from_json(j);
     }
     catch (const std::exception &e)
     {
         std::cerr << "Failed to load configuration: " << e.what() << std::endl;
-        return false;
     }
 }
 
-bool ConfigManager::SaveConfig(const std::string &filename)
+void ConfigManager::save_config() const
 {
     try
     {
-        json j;
-        j["auto_start"] = m_markerProperties.auto_start;
-        j["update_interval"] = m_markerProperties.update_interval;
-        j["type"] = m_markerProperties.type;
-
-        j["position"]["x"] = m_markerProperties.position.x;
-        j["position"]["y"] = m_markerProperties.position.y;
-
-        j["marker"]["en"]["width"] = m_markerProperties.marker.en.width;
-        j["marker"]["en"]["color"] = m_markerProperties.marker.en.color;
-        j["marker"]["en"]["shape"] = m_markerProperties.marker.en.shape;
-
-        j["marker"]["zh"]["width"] = m_markerProperties.marker.zh.width;
-        j["marker"]["zh"]["color"] = m_markerProperties.marker.zh.color;
-        j["marker"]["zh"]["shape"] = m_markerProperties.marker.zh.shape;
-
-        j["image"]["en"]["path"] = m_markerProperties.image.en.path;
-        j["image"]["en"]["width"] = m_markerProperties.image.en.width;
-
-        j["image"]["zh"]["path"] = m_markerProperties.image.zh.path;
-        j["image"]["zh"]["width"] = m_markerProperties.image.zh.width;
-
-        j["exclude"] = m_markerProperties.exclude;
-
-        std::ofstream file(filename);
+        auto json_config = to_json(m_marker_properties_);
+        std::ofstream file(m_filename_);
         if (!file.is_open())
         {
-            std::cerr << "Unable to open file for writing: " << filename << std::endl;
-            return false;
+            std::cerr << "Unable to open file for writing: " << m_filename_ << std::endl;
+            return;
         }
 
-        file << j.dump(4); // Use 4 spaces for indentation
-        return true;
+        file << json_config.dump(4);
     }
     catch (const std::exception &e)
     {
         std::cerr << "Failed to save configuration: " << e.what() << std::endl;
-        return false;
     }
 }
 
-MarkerProperties ConfigManager::GetMarkerProperties() const
+MarkerProperties ConfigManager::get_marker_properties() const
 {
-    return m_markerProperties;
+    return m_marker_properties_;
 }
 
-void ConfigManager::SetMarkerProperties(const MarkerProperties &properties)
+void ConfigManager::set_marker_properties(const MarkerProperties &properties)
 {
-    m_markerProperties = properties;
+    m_marker_properties_ = properties;
 }
