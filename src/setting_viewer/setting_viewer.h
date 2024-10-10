@@ -5,11 +5,16 @@
 class SettingViewer
 {
   public:
-    SettingViewer();
-    ~SettingViewer();
+    static SettingViewer &get_instance();
+
+    SettingViewer(const SettingViewer &) = delete;
+    SettingViewer &operator=(const SettingViewer &) = delete;
 
     void show();
 
   private:
     webview::webview *m_wv{nullptr};
+
+    SettingViewer();
+    ~SettingViewer();
 };
