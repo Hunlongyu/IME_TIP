@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+﻿cmake_minimum_required(VERSION 3.28)
 
 project(IME_Tips)
 
@@ -16,6 +16,10 @@ if(WIN32)
     file(APPEND ${RESOURCE_FILE} "IDI_APP_ICON ICON assets\\image\\logo.ico\n")
     file(APPEND ${RESOURCE_FILE} "IDI_HTML_FILE HTML assets\\html\\index.html\n")
     file(WRITE "resource.h" "#define IDI_APP_ICON 101\n#define IDI_HTML_FILE 102\n")
+endif()
+
+if(MSVC)
+    add_compile_options("/source-charset:utf-8")
 endif()
 
 if(WIN32)

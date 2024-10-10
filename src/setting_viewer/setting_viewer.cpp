@@ -32,7 +32,7 @@ void SettingViewer::show()
     }
 
     m_wv = new webview::webview(false, nullptr);
-    m_wv->set_title("IME_Tips settings");
+    m_wv->set_title("IME_Tips 设置");
     m_wv->set_size(1280, 720, WEBVIEW_HINT_NONE);
 
     get_config();
