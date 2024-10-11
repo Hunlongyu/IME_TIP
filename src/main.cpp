@@ -1,4 +1,4 @@
-﻿#include "../resource.h"
+#include "../resource.h"
 #include "config_manager/config_manager.h"
 #include "input_method/input_method.h"
 #include "setting_viewer/setting_viewer.h"

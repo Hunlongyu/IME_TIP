@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.28)
 
 project(IME_Tips)
 
@@ -19,7 +19,7 @@ if(WIN32)
 endif()
 
 if(MSVC)
-    add_compile_options("/source-charset:utf-8")
+    add_compile_options("/utf-8")
 endif()
 
 if(WIN32)

@@ -1,4 +1,4 @@
-﻿#include "setting_viewer.h"
+#include "setting_viewer.h"
 
 #include "../../resource.h"
 #include "../config_manager/config_manager.h"
@@ -34,6 +34,10 @@ void SettingViewer::show()
     m_wv = new webview::webview(false, nullptr);
     m_wv->set_title("IME_Tips 设置");
     m_wv->set_size(1280, 720, WEBVIEW_HINT_NONE);
+
+    HICON icon = LoadIcon(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDI_APP_ICON));
+    const HWND win = GetActiveWindow();
+    SendMessage(win, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(icon));
 
     get_config();
     save_config();
