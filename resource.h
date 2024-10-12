@@ -1,2 +1,2 @@
-#define IDI_APP_ICON 101
 #define IDI_HTML_FILE 102
+#define IDI_APPLICATION 32512

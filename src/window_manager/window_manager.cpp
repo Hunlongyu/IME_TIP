@@ -1,4 +1,4 @@
-﻿#include "window_manager.h"
+#include "window_manager.h"
 #include "../../resource.h"
 #include <iostream>
 
@@ -38,7 +38,7 @@ void WindowManager::initialize_tray()
     m_nid.uID = 1;
     m_nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
     m_nid.uCallbackMessage = WM_TRAYICON;
-    m_nid.hIcon = LoadIcon(nullptr, MAKEINTRESOURCE(IDI_APP_ICON));
+    m_nid.hIcon = LoadIcon(nullptr, MAKEINTRESOURCE(IDI_APPLICATION));
     wcsncpy_s(m_nid.szTip, L"IME_Tips\n输入法中英文状态提示", ARRAYSIZE(m_nid.szTip) - 1);
     m_nid.szTip[ARRAYSIZE(m_nid.szTip) - 1] = L'\0';
 

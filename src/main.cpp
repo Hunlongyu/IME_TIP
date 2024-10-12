@@ -47,7 +47,7 @@ int main()
 
     windowManager.initialize();
 
-    HICON hIcon = LoadIcon(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDI_APP_ICON));
+    HICON hIcon = LoadIcon(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDI_APPLICATION));
     windowManager.set_icon(hIcon);
 
     windowManager.set_show_callback([] { SettingViewer::get_instance().show(); });
